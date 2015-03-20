@@ -27,11 +27,11 @@ def downLoadImg(imglist,title):  # 下载图片到本地
         x += 1
 
 
-def createNewFolder(html):  # 创建文件夹，返回文件夹名
+def createNewFolder(html,lenPic):  # 创建文件夹，返回文件夹名
     reg = r'<h2>(.+)</h2>'
     titleRe = re.compile(reg)
     title = re.findall(titleRe, html)
-    title[0]=rUnsupportChar(title[0])
+    title[0]=rUnsupportChar(title[0])+" "+str(lenPic)+"P"
     dirPath = os.getcwdu() + unicode("\\") + unicode(title[0])
     if(os.path.exists(dirPath) == False):
         os.makedirs(unicode(title[0]))
@@ -63,12 +63,10 @@ def getAllPageUrl(html):  # 获取专辑下所以分页URL列表
 socket.setdefaulttimeout(60)        
   
 albumURL = "http://www.topit.me/album/1042226"
+albumURL = "http://www.topit.me/album/1401468"
   
 #获取html页面源代码
 html = getHtml(albumURL)
-  
-#创建专辑名为名的文件夹
-title=createNewFolder(html)
 
 #获取该专辑的所以分页URL
 pageList=getAllPageUrl(html)
@@ -77,13 +75,19 @@ pageList=getAllPageUrl(html)
 imgDetialList=[]
 for pageitem in pageList:
     imgDetialList+=getItemsUrlList(pageitem)
+lenPic=len(imgDetialList)
 print imgDetialList
+print u"一共"+str(lenPic)+u"张图片"
 
 #获得图片URL
 imgList=[]
+print u"正在获取图片URL地址"
 for imgitem in imgDetialList:
     imgList+=getPicUrl(imgitem)
-    
+
+#创建专辑名为名的文件夹
+title=createNewFolder(html,lenPic)
+   
 #下载图片
 downLoadImg(imgList, title)
 
