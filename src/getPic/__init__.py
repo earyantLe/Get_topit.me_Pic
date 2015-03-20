@@ -22,7 +22,7 @@ def downLoadImg(imglist,title):  # 下载图片到本地
     x=1
     for imgurl in imglist:
         picPath=os.getcwd() + '\\' + title + '\%s.jpg' % x
-        print "download: "+picPath
+        print "Downloading: "+picPath
         urllib.urlretrieve(imgurl, unicode(picPath))
         x += 1
 
@@ -62,8 +62,9 @@ def getAllPageUrl(html):  # 获取专辑下所以分页URL列表
 #防止网络延迟导致崩溃   
 socket.setdefaulttimeout(60)        
   
-albumURL = "http://www.topit.me/album/1042226"
-albumURL = "http://www.topit.me/album/1401468"
+albumURL = "http://www.topit.me/album/1230349"  #find no Url
+albumURL = "http://www.topit.me/album/1225451"  #find no Url
+albumURL = "http://www.topit.me/album/1228963"  # can not retrive all page 
   
 #获取html页面源代码
 html = getHtml(albumURL)
@@ -81,7 +82,7 @@ print u"一共"+str(lenPic)+u"张图片"
 
 #获得图片URL
 imgList=[]
-print u"正在获取图片URL地址"
+print u"正在获取图片URL地址..."
 for imgitem in imgDetialList:
     imgList+=getPicUrl(imgitem)
 
