@@ -1,0 +1,25 @@
+
+
+    # -*- coding: gb18030 -*-   
+    import string  
+    import re  
+      
+    identify = string.maketrans('', '')   
+      
+    delEStr = string.punctuation + ' ' + string.digits  #ASCII 标点符号，空格和数字   
+    delCStr = '《》（）&%￥#@！{}【】'   
+      
+    s = '中华人民共和国（北京）'   
+      
+    s = s.translate(identify, delEStr) #去掉ASCII 标点符号和空格   
+    if re.findall('[\x80-\xff].', s):    #s为中文   
+       s = s.translate(identify, delCStr)   
+       print s   
+    else: #s为英文   
+        print s  
+
+当然，首先是要import string和re（这里需要正则表达式功能）。
+
+delEStr是一个包含英文标点符号和数字的字符串，就如 '(){}<>1234 ' 这样。delCStr是一个包含中文标点符号的字符串。s是一个测试字符串。
+
+12行的功能就是把s中的英文标点符号都删除。
