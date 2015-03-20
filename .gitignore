@@ -54,5 +54,5 @@ docs/_build/
 target/
 
 # Pic files
-*/*.jpg
-*/*.bmp
+*.jpg
+*.bmp
