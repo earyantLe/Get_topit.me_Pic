@@ -3,7 +3,14 @@ A Python script to download topit.me  picture and grouped by catalog title.
 
 ##Exist Bug
 -some page can not retrive img url
--can not get all page
+-can not down load image which layout other than three colums
+-big picure can not download
 
 ##Require test
--input some URL like "http:abc.com?p=2"
+
+
+##improve feature
+-add search function
+-add mutil-thread download
+-add download all link from hot catalog function
+

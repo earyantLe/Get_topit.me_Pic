@@ -1,8 +1,7 @@
 #-*-coding=utf-8-*-
-import re, os, urllib, sys, socket, string,time,types
+import re, os, urllib, sys, socket, string,time,types,math
 from itertools import count
 from os.path import join, getsize  
-import math
 from multiprocessing import TimeoutError
 
 def getHtml(url):  # 获取网页源代码
@@ -104,7 +103,7 @@ socket.setdefaulttimeout(30)
   
 albumURL = "http://www.topit.me/album/1230349"  #find no Url brcause thee colum
 albumURL = "http://www.topit.me/album/1225451"  #find no Url brcause three colum
-albumURL = "http://www.topit.me/album/1329327"  
+albumURL = "http://www.topit.me/album/126073"  
 
 #获取html页面源代码
 html = getHtml(albumURL)
