@@ -2,12 +2,10 @@
 A Python script to download topit.me  picture and grouped by catalog title.
 
 ##Exist Bug
--some page can not retrive img url
--can not down load image which layout other than three colums
--big picure can not download
+-some picure can not download,could be picsServer problem or others problems 
 
 ##Require test
-stabled
+stabled test
 
 ##improve feature
 -add search function
