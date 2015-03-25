@@ -107,17 +107,30 @@ def getAllPageUrl(html,albumURL,maxPage=99):  # 获取所有分页URL列表
         pagelist.append(albumURL + "?p=" + str(i))
     return  pagelist
 
+
 def setUTF8():       #确保默认编码为UTF-8
     reload(sys)
-    sys.setdefaultencoding("utf-8")  # 该方法在2.5以后被隐蔽，需重新装载sys模块才能使用，请无视eclipse错误
+    sys.setdefaultencoding("utf-8")  # 该方法在2.5版本以后被隐蔽，需重新装载sys模块才能使用，请无视eclipse错误
     print "默认编码为： : " + sys.getdefaultencoding()
 
-def downloadOneAlbum(albumURL):  #下载一个专辑所有图片到本地文件夹
+# def downloadALLAlbum(homeURL,maxPage):   #下载所有推荐专辑或者热门专辑
+#     reg=r'<a href="([^\s]*?album/[\d]*?)">'
+#     mre = re.compile(reg)
+#     numlist = re.findall(mre, html)
+#     pages = int(numlist[-1])
+#     if (pages>maxPage):
+#         pages=maxPage
+#     pagelist = []
+#     for i in range(1, pages + 1):
+#         pagelist.append(albumURL + "?p=" + str(i))
+#     downloadOneAlbum(albumURL,maxPage)
+
+def downloadOneAlbum(albumURL,maxPage=99):  #下载一个专辑所有图片到本地文件夹
     # 获取html页面源代码
     html = getHtml(albumURL)
 
     # 获取该专辑的所以分页URL
-    pageList = getAllPageUrl(html,albumURL)
+    pageList = getAllPageUrl(html,albumURL,maxPage)
   
     # 遍历图片详情页URL
     imgDetialList = []
@@ -139,7 +152,7 @@ def downloadOneAlbum(albumURL):  #下载一个专辑所有图片到本地文件�
     downLoadImg(imgList, title)
         
 
-albumURL = "http://www.topit.me/album/1831176"  
+albumURL = "http://www.topit.me/album/1441554"  
 album="http://www.topit.me/albums"
 
 setUTF8()
