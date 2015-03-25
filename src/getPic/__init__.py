@@ -6,6 +6,11 @@ from multiprocessing import TimeoutError
 from lib2to3.pgen2.token import PERCENT
 from random import choice
 
+def setUTF8():       #确保默认编码为UTF-8
+    reload(sys)
+    sys.setdefaultencoding("utf-8")  # 该方法在2.5版本以后被隐蔽，需重新装载sys模块才能使用，请无视eclipse错误
+#     print "默认编码为： : " + sys.getdefaultencoding()
+
 def getHtml(url):  # 获取网页源代码
     page = urllib.urlopen(url)
     html = page.read()
@@ -13,7 +18,7 @@ def getHtml(url):  # 获取网页源代码
 
 def rUnsupportChar(s):  # 替换不能作为目录名的字符 <> : * " ? |
     unSupChar = r'''
-    <>:*"?\
+    <>:*"?|
     '''
     supChar = r'''
     ()-^~$-
@@ -99,7 +104,10 @@ def getAllPageUrl(html,albumURL,maxPage=99):  # 获取所有分页URL列表
     reg = r'<a href="[^s]+?p=(\d*?)">'
     mre = re.compile(reg)
     numlist = re.findall(mre, html)
-    pages = int(numlist[-1])
+    if numlist:                                 # 判断空,防止只有一页的专辑
+        pages = int(numlist[-1])
+    else:
+        pages=1
     if (pages>maxPage):
         pages=maxPage
     pagelist = []
@@ -107,23 +115,42 @@ def getAllPageUrl(html,albumURL,maxPage=99):  # 获取所有分页URL列表
         pagelist.append(albumURL + "?p=" + str(i))
     return  pagelist
 
+def getAllAlbum(homeURL):
+    homeURL=getHtml(homeURL)
+    reg=r'<a href="([^\s]*?album/[\d]*?)">'
+    mre = re.compile(reg)
+    numlist = re.findall(mre, homeURL)
+    return numlist
+    
 
-def setUTF8():       #确保默认编码为UTF-8
-    reload(sys)
-    sys.setdefaultencoding("utf-8")  # 该方法在2.5版本以后被隐蔽，需重新装载sys模块才能使用，请无视eclipse错误
-    print "默认编码为： : " + sys.getdefaultencoding()
+def downloadALLAlbum(homeURL,maxPage=20):   #下载所有推荐专辑或者热门专辑,默认下载20个专辑
+    p=int(math.ceil(float(maxPage)/40))
+    pageList=[]
+    for i in range(1,p+1):
+        albumURL=homeURL+'?p='+str(i)
+        pageList+=getAllAlbum(albumURL)
+    for i in range(0,maxPage):
+        print "\n======================="+u'下载专辑  '+ pageList[i]+"======================="
+        downloadOneAlbum(pageList[i])
 
-# def downloadALLAlbum(homeURL,maxPage):   #下载所有推荐专辑或者热门专辑
-#     reg=r'<a href="([^\s]*?album/[\d]*?)">'
-#     mre = re.compile(reg)
-#     numlist = re.findall(mre, html)
-#     pages = int(numlist[-1])
-#     if (pages>maxPage):
-#         pages=maxPage
-#     pagelist = []
-#     for i in range(1, pages + 1):
-#         pagelist.append(albumURL + "?p=" + str(i))
-#     downloadOneAlbum(albumURL,maxPage)
+def downloadQurryAlbum(homeURL,maxPage=20):   #下载所有搜索到的专辑,默认下载20个专辑
+    pageList=[]
+    homeURLContent=getHtml(homeURL)
+    reg = r'<a href="http://www.topit.me/albums/search\?query=[^s]+?&p=([1-9]\d*)">'
+    mre = re.compile(reg)
+    numlist = re.findall(mre, homeURLContent)
+    if numlist:                                 # 判断空,防止只有一页的专辑
+        pages = int(numlist[-1])
+    else:
+        pages=1
+    for i in range(1,pages+1):
+        albumURL=homeURL+'&p='+str(i)
+        print albumURL
+        pageList+=getAllAlbum(albumURL)
+    print pageList
+    for i in range(0,maxPage):
+        print "\n===================="+u'下载搜索到的专辑  '+ pageList[i]+"====================="
+        downloadOneAlbum(pageList[i])
 
 def downloadOneAlbum(albumURL,maxPage=99):  #下载一个专辑所有图片到本地文件夹
     # 获取html页面源代码
@@ -152,25 +179,36 @@ def downloadOneAlbum(albumURL,maxPage=99):  #下载一个专辑所有图片到�
     downLoadImg(imgList, title)
         
 
-albumURL = "http://www.topit.me/album/1441554"  
+
 album="http://www.topit.me/albums"
+albumhot="http://www.topit.me/albums/hot"
+albumURL = "http://www.topit.me/album/1140304"  
 
 setUTF8()
 
 # 设置默认防止网络延迟导致崩溃   
 socket.setdefaulttimeout(30)        
 
-# choice=raw_input("直接双击回车键随便下载点东西，或者输入要搜索的文字以下载图片")
-# 
-# if(choice==r'\n'):
-#     print 'ok'
-# else:
-#     print choice
+choice=raw_input("直接点击 y 随便下载热门推荐图片，或者输入要搜索的文字以下载相关图片\n")
+ 
+if(choice=='y' or choice=='Y'):
+    num=raw_input("输入您要下载的专辑数量，直接点击y默认为20，建议低于60\n")
+    if (not num.isdigit()):
+        print ur'输入的内容不是数字或者y,程序已退出'
+        exit()
+    if num=='y':
+        num=20
+    downloadALLAlbum(album, int(num))
+else:
+    queryURL=r'http://www.topit.me/albums/search?query='+choice
+    num=raw_input("输入您要下载的专辑数量，直接点击y默认为20，建议低于60\n")
+    if (not num.isdigit()):
+        print ur'输入的内容不是数字或者y,程序已退出'
+        exit()
+    if num=='y':
+        num=20
+    downloadQurryAlbum(queryURL, int(num))
     
-# html=getHtml(album)
-# albumList=getAllPageUrl(html, album, 10)
-# print albumList
 
-downloadOneAlbum(albumURL)
 
 
