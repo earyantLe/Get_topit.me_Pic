@@ -166,6 +166,8 @@ def downloadQurryAlbum(homeURL, maxPage=20):  # 下载所有搜索到的专辑,�
         downloadOneAlbum(pageList[i])
 
 
+
+    # csa
 def downloadOneAlbum(albumURL, maxPage=99):  # 下载一个专辑所有图片到本地文件夹
     # 获取html页面源代码
     html = getHtml(albumURL)
