@@ -134,7 +134,7 @@ def getAllAlbum(homeURL):
     return numlist
 
 
-def downloadALLAlbum(homeURL, maxPage=20):  # 下载所有推荐专辑或者热门专辑,默认下载20个专辑
+def downloadALLAlbum(homeURL, maxPage=100):  # 下载所有推荐专辑或者热门专辑,默认下载20个专辑
     p = int(math.ceil(float(maxPage) / 40))
     pageList = []
     for i in range(1, p + 1):
