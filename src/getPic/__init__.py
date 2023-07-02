@@ -49,7 +49,7 @@ def downLoadImg(imglist, title):  # 下载图片到本地
                 print u'下载成功!!!'
                 tryTime = 1
             else:
-                if (tryTime < 6):  # 下载失败时尝试重新下载次数
+                if (tryTime < 2):  # 下载失败时尝试重新下载次数
                     print u'下载失败，重新下载...'
                     tryTime += 1
                     i -= 1
@@ -60,7 +60,7 @@ def downLoadImg(imglist, title):  # 下载图片到本地
         except Exception:
             print u'下载超时，重新下载...'
             tryTime += 2
-            if (tryTime > 6):  # 下载失败时尝试重新下载次数
+            if (tryTime > 2):  # 下载失败时尝试重新下载次数
                 print u'---------------------\n该文件无法下载，图片URL地址为： ' + unicode(imgurl) + "\n---------------------"
                 tryTime = 1
                 i += 1
@@ -156,12 +156,14 @@ def downloadQurryAlbum(homeURL, maxPage=20):  # 下载所有搜索到的专辑,�
     else:
         pages = 1
     for i in range(1, pages + 1):
-        albumURL = homeURL + '&p=' + str(i)
+        albumURL = homeURL + '?p=' + str(i)
         print albumURL
         pageList += getAllAlbum(albumURL)
     print pageList
     # for i in range(0, maxPage):
-    for i in range(0, len(pageList)):
+    for i in range(20, len(pageList)):
+        if i%2 == 0:
+            continue
         print "\n====================" + u'下载搜索到的专辑  ' + pageList[i] + "====================="
         downloadOneAlbum(pageList[i])
 
@@ -198,6 +200,7 @@ def downloadOneAlbum(albumURL, maxPage=99):  # 下载一个专辑所有图片到
 album = "http://www.topit.me/albums"
 albumhot = "http://www.topit.me/albums/hot"
 albumURL = "http://www.topit.me/album/1140304"
+# albumURL = "http://www.topit.me/album/1140304"
 
 setUTF8()
 
@@ -215,7 +218,7 @@ if (choice == 'y' or choice == 'Y'):
         num = 20
     downloadALLAlbum(album, int(num))
 else:
-    queryURL = r'http://www.topit.me/albums/search?query=' + choice
+    queryURL = r'http://www.topit.me/user/2443798/albums'
     num = raw_input("输入您要下载的专辑数量，直接点击y默认为20，建议低于60\n")
     if (not num.isdigit()):
         print ur'输入的内容不是数字或者y,程序已退出'
